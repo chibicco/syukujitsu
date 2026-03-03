@@ -3,23 +3,30 @@
 require "test_helper"
 
 class SyukujitsuTest < Minitest::Test
-  include HolidayAssertions
-
-  def test_holiday_contract
-    assert_holiday_contract(
-      Syukujitsu,
-      holiday_date: Date.new(2025, 1, 1),
-      non_holiday_date: Date.new(2025, 1, 2),
-      holiday_name: "元日"
-    )
+  def test_include
+    assert Syukujitsu.include?(Date.new(2025, 1, 1))
+    refute Syukujitsu.include?(Date.new(2025, 1, 2))
   end
 
-  def test_between_contract
-    assert_between_contract(
-      Syukujitsu,
-      start_date: Date.new(2025, 1, 1),
-      end_date: Date.new(2025, 3, 31)
-    )
+  def test_on
+    entity = Syukujitsu.on(Date.new(2025, 1, 1))
+
+    assert_instance_of Syukujitsu::Entity, entity
+    assert_equal "元日", entity.name
+
+    assert_nil Syukujitsu.on(Date.new(2025, 1, 2))
+  end
+
+  def test_name
+    assert_equal "元日", Syukujitsu.name(Date.new(2025, 1, 1))
+    assert_nil Syukujitsu.name(Date.new(2025, 1, 2))
+  end
+
+  def test_between
+    entities = Syukujitsu.between(Date.new(2025, 1, 1), Date.new(2025, 3, 31))
+
+    refute_empty entities
+    assert entities.all? { |e| e.date >= Date.new(2025, 1, 1) && e.date <= Date.new(2025, 3, 31) }
   end
 
   def test_enumerable_select

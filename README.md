@@ -24,8 +24,8 @@ bundle install
 require "syukujitsu"
 
 # 祝日かどうか
-Syukujitsu.holiday?(Date.new(2025, 1, 1))  #=> true
-Syukujitsu.holiday?(Date.new(2025, 1, 2))  #=> false
+Syukujitsu.include?(Date.new(2025, 1, 1))  #=> true
+Syukujitsu.include?(Date.new(2025, 1, 2))  #=> false
 
 # 祝日名を取得
 Syukujitsu.name(Date.new(2025, 1, 1))  #=> "元日"
@@ -89,7 +89,7 @@ bundle exec syukujitsu update
 
 | メソッド | 戻り値 | 説明 |
 |---|---|---|
-| `Syukujitsu.holiday?(date)` | `Boolean` | 祝日かどうか |
+| `Syukujitsu.include?(date)` | `Boolean` | 祝日かどうか |
 | `Syukujitsu.on(date)` | `Entity` / `nil` | 祝日の Entity を返す |
 | `Syukujitsu.name(date)` | `String` / `nil` | 祝日名を返す |
 | `Syukujitsu.between(start, end)` | `Array<Entity>` | 期間内の祝日を返す |

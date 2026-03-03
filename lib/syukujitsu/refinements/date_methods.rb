@@ -8,7 +8,7 @@ module Syukujitsu
     module DateMethods
       refine Date do
         def holiday?
-          Syukujitsu.holiday?(self)
+          Syukujitsu.include?(self)
         end
 
         def holiday_name

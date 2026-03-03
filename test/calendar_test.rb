@@ -3,8 +3,6 @@
 require "test_helper"
 
 class CalendarTest < Minitest::Test
-  include HolidayAssertions
-
   def setup
     @calendar = Syukujitsu::Calendar.load
   end
@@ -32,13 +30,23 @@ class CalendarTest < Minitest::Test
     assert_operator @calendar.count, :>, 0
   end
 
-  def test_holiday_contract
-    assert_holiday_contract(
-      @calendar,
-      holiday_date: Date.new(2025, 1, 1),
-      non_holiday_date: Date.new(2025, 1, 2),
-      holiday_name: "元日"
-    )
+  def test_holiday
+    assert @calendar.holiday?(Date.new(2025, 1, 1))
+    refute @calendar.holiday?(Date.new(2025, 1, 2))
+  end
+
+  def test_on
+    entity = @calendar.on(Date.new(2025, 1, 1))
+
+    assert_instance_of Syukujitsu::Entity, entity
+    assert_equal "元日", entity.name
+
+    assert_nil @calendar.on(Date.new(2025, 1, 2))
+  end
+
+  def test_name
+    assert_equal "元日", @calendar.name(Date.new(2025, 1, 1))
+    assert_nil @calendar.name(Date.new(2025, 1, 2))
   end
 
   def test_on_substitute_holiday
@@ -47,12 +55,11 @@ class CalendarTest < Minitest::Test
     assert_equal "休日", entity.name
   end
 
-  def test_between_contract
-    assert_between_contract(
-      @calendar,
-      start_date: Date.new(2025, 1, 1),
-      end_date: Date.new(2025, 3, 31)
-    )
+  def test_between
+    entities = @calendar.between(Date.new(2025, 1, 1), Date.new(2025, 3, 31))
+
+    refute_empty entities
+    assert entities.all? { |e| e.date >= Date.new(2025, 1, 1) && e.date <= Date.new(2025, 3, 31) }
   end
 
   def test_between_empty_range
@@ -78,19 +85,17 @@ class CalendarTest < Minitest::Test
   end
 
   def test_between_accepts_datetime
-    assert_between_contract(
-      @calendar,
-      start_date: DateTime.new(2025, 1, 1, 0, 0, 0),
-      end_date: DateTime.new(2025, 3, 31, 23, 59, 59)
-    )
+    entities = @calendar.between(DateTime.new(2025, 1, 1, 0, 0, 0), DateTime.new(2025, 3, 31, 23, 59, 59))
+
+    refute_empty entities
+    assert entities.all? { |e| e.date >= Date.new(2025, 1, 1) && e.date <= Date.new(2025, 3, 31) }
   end
 
   def test_between_accepts_time
-    assert_between_contract(
-      @calendar,
-      start_date: Time.new(2025, 1, 1, 0, 0, 0),
-      end_date: Time.new(2025, 3, 31, 23, 59, 59)
-    )
+    entities = @calendar.between(Time.new(2025, 1, 1, 0, 0, 0), Time.new(2025, 3, 31, 23, 59, 59))
+
+    refute_empty entities
+    assert entities.all? { |e| e.date >= Date.new(2025, 1, 1) && e.date <= Date.new(2025, 3, 31) }
   end
 
   def test_entities_are_frozen

@@ -5,7 +5,7 @@ require_relative "../syukujitsu"
 
 class Date
   def holiday?
-    Syukujitsu.holiday?(self)
+    Syukujitsu.include?(self)
   end
 
   def holiday_name

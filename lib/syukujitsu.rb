@@ -10,7 +10,11 @@ module Syukujitsu
     extend Forwardable
     include Enumerable
 
-    def_delegators :calendar, :each, :holiday?, :on, :name, :between
+    def_delegators :calendar, :each, :on, :name, :between
+
+    def include?(date)
+      calendar.holiday?(date)
+    end
 
     private
 
