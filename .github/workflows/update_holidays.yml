@@ -1,0 +1,52 @@
+name: Update holidays CSV
+
+on:
+  schedule:
+    - cron: "0 0 * * 6" # JST 土曜 9:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Update CSV
+        run: bundle exec ruby exe/syukujitsu update
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet holidays.csv; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          branch="update-holidays-$(date +%Y%m%d)"
+          git checkout -b "$branch"
+          git add holidays.csv
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update holidays.csv"
+          git push origin "$branch"
+          gh pr create \
+            --title "Update holidays.csv" \
+            --body "内閣府の祝日データを更新します。" \
+            --base main \
+            --head "$branch"

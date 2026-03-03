@@ -1,0 +1,23 @@
+PATH
+  remote: .
+  specs:
+    syukujitsu (0.1.0)
+      csv (~> 3.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    csv (3.3.5)
+    minitest (5.27.0)
+    rake (13.3.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  minitest (~> 5.0)
+  rake (~> 13.0)
+  syukujitsu!
+
+BUNDLED WITH
+   2.7.1

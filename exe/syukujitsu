@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "open-uri"
+require "syukujitsu"
+
+case ARGV[0]
+when "update"
+  url = "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv"
+  csv_path = File.expand_path("../holidays.csv", __dir__)
+
+  begin
+    raw = URI.open(url).read
+  rescue OpenURI::HTTPError => e
+    abort "Error: Failed to download CSV from #{url} (#{e.message})"
+  rescue SocketError, Errno::ECONNREFUSED => e
+    abort "Error: Could not connect to #{url} (#{e.message})"
+  end
+
+  utf8 = raw.encode("UTF-8", "Shift_JIS")
+  File.write(csv_path, utf8)
+
+  count = utf8.each_line.count - 1
+  puts "Updated #{csv_path} (#{count} entries)"
+else
+  puts "Usage: syukujitsu update"
+  exit 1
+end
