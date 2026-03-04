@@ -1,7 +1,7 @@
 # Syukujitsu
 
 [![Test](https://github.com/chibicco/syukujitsu/actions/workflows/test.yml/badge.svg)](https://github.com/chibicco/syukujitsu/actions/workflows/test.yml)
-[![Gem Version](https://badge.fury.io/rb/syukujitsu.svg)](https://rubygems.org/gems/syukujitsu)
+[![Gem Version](https://badge.fury.io/rb/syukujitsu.svg?icon=si%3Arubygems)](https://badge.fury.io/rb/syukujitsu)
 
 [内閣府「国民の祝日」](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html)のデータを提供する Ruby gem です。
 内閣府が公開する CSV を正とし、1955年〜の祝日データを `Enumerable` なインターフェースで扱えます。
